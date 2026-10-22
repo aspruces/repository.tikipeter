@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WinWin Support – presentationsvideo</title>
+<meta name="description" content="Animerad presentationsvideo för föreningar: WinWin Support tar hand om föreningens WordPress-hemsida. 16:9 och 9:16, med undertexter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#144772; --blue-deep:#0E3356; --blue-mid:#1F5C8F; --blue-soft:#D6E3F0; --blue-tint:#EAF1F8; --paper:#F5F8FB;
+    --yellow:#FFD103; --white:#FFFFFF; --ink:#1F2A37; --ink-soft:#4B5868; --line:#C9D7E6;
+    --head:'Oswald','Roboto Condensed','Arial Narrow',sans-serif;
+    --body:'Open Sans','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0b1f33;color:var(--ink);font-family:var(--body);overflow:hidden}
+  body{position:relative}
+
+  /* ---------- Stage ---------- */
+  #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px rgba(255,255,255,.06),0 30px 80px rgba(0,0,0,.5)}
+  #stage.v{width:1080px;height:1920px}
+  .scene{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;pointer-events:none;overflow:hidden}
+  .scene.active{opacity:1}
+  .scene .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:90px 120px 190px;gap:34px;text-align:center}
+  .v .scene .wrap{padding:140px 70px 470px;gap:34px}
+
+  /* ---------- Animation primitives ---------- */
+  .a{opacity:0;transform:translateY(26px);transition:opacity .55s ease,transform .55s ease}
+  .a.on{opacity:1;transform:none}
+  .a.pop{transform:scale(.92)}
+  .a.pop.on{transform:none}
+  .a.grow{transform:scaleX(0);transform-origin:left center;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .3s}
+  .a.grow.on{transform:none}
+
+  /* ---------- Typography ---------- */
+  .eyebrow{font:600 30px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--blue-mid)}
+  .h1{font:700 118px/1.05 var(--head);color:var(--blue);letter-spacing:.005em;max-width:1500px}
+  .h2{font:700 92px/1.08 var(--head);color:var(--blue);max-width:1500px}
+  .lead{font:400 42px/1.4 var(--body);color:var(--ink-soft);max-width:1300px}
+  .dark{background:var(--blue);color:var(--white)}
+  .dark .eyebrow{color:var(--yellow)}
+  .dark .h1,.dark .h2{color:var(--white)}
+  .dark .lead{color:rgba(255,255,255,.85)}
+  .ul{box-shadow:inset 0 -.22em 0 var(--yellow)}
+  .dot{display:inline-block;width:.32em;height:.32em;border-radius:50%;background:var(--yellow);margin-left:.08em;vertical-align:baseline}
+  .v .h1{font-size:100px}
+  .v .h2{font-size:84px}
+  .v .lead{font-size:40px}
+  .v .eyebrow{font-size:28px}
+
+  /* ---------- Scene 1 ---------- */
+  #s1 .meeting{width:900px;height:400px}
+  .v #s1 .meeting{width:860px;height:380px}
+  #s1 .bubble{opacity:0;transform:translate(0,10px) scale(.6);transform-origin:bottom left;transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1.3)}
+  #s1 .bubble.on{opacity:1;transform:none}
+
+  /* ---------- Scene 2 ---------- */
+  #s2 .h1{font-size:170px}
+  .v #s2 .h1{font-size:150px}
+  .logo{display:block}
+  #s2 .logo{width:620px;height:auto}
+  .v #s2 .logo{width:560px}
+  .people{display:flex;gap:44px;justify-content:center}
+  .v .people{flex-direction:column;gap:28px;align-items:center}
+  .ph{width:540px;height:304px;border:4px dashed rgba(255,255,255,.55);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.06);position:relative}
+  .v .ph{width:760px;height:250px}
+  .ph .tag{font:600 22px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--yellow)}
+  .ph .name{font:700 44px/1.1 var(--head);color:#fff}
+  .ph .role{font:400 28px/1.2 var(--body);color:rgba(255,255,255,.8)}
+  .ph svg{width:74px;height:74px;opacity:.7;margin-bottom:6px}
+  .place{display:flex;align-items:center;gap:16px;font:400 36px/1 var(--body);color:rgba(255,255,255,.9)}
+  .place svg{width:44px;height:44px}
+  .place b{font-weight:600;color:#fff}
+  .place .sep{opacity:.5;margin:0 6px}
+  .v .place{flex-direction:column;gap:10px;font-size:32px}
+  .v .place .sep{display:none}
+
+  /* ---------- Scene 3 ---------- */
+  .cards{display:flex;gap:40px;justify-content:center;width:100%}
+  .v .cards{flex-direction:column;align-items:center;gap:26px}
+  .card{flex:1 1 0;max-width:520px;background:#fff;border:2px solid var(--line);border-radius:26px;padding:44px 40px 40px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 18px 50px rgba(20,71,114,.08)}
+  .v .card{max-width:none;width:100%;flex-direction:row;text-align:left;align-items:center;gap:28px;padding:30px 36px}
+  .card .ic{width:110px;height:110px;border-radius:50%;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;flex:none}
+  .card .ic svg{width:62px;height:62px}
+  .card .t{font:700 50px/1.1 var(--head);color:var(--blue)}
+  .card .s{font:400 28px/1.35 var(--body);color:var(--ink-soft)}
+  .v .card .t{font-size:46px}
+  .v .card .s{font-size:27px}
+  .tagline{font:700 120px/1 var(--head);color:var(--blue);margin-top:10px}
+  .v .tagline{font-size:96px}
+
+  /* ---------- Scene 4 ---------- */
+  #s4 .wrap{background:var(--blue-tint)}
+  .grid{display:flex;gap:44px;width:100%;justify-content:center;align-items:stretch}
+  .v .grid{flex-direction:column;align-items:center;gap:28px}
+  .panel{background:#fff;border-radius:26px;padding:40px 46px;text-align:left;box-shadow:0 18px 50px rgba(20,71,114,.08);display:flex;flex-direction:column;gap:22px;flex:1 1 0;max-width:800px}
+  .v .panel{width:100%;max-width:none}
+  .panel .pt{font:600 26px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--blue-mid)}
+  .check{display:flex;align-items:center;gap:22px;font:400 36px/1.25 var(--body);color:var(--ink)}
+  .check .ck{width:54px;height:54px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex:none}
+  .check .ck svg{width:30px;height:30px}
+  .check small{display:block;font-size:26px;color:var(--ink-soft)}
+  .pricebox{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+  .price{font:700 150px/1 var(--head);color:var(--blue)}
+  .price small{font:400 56px/1 var(--head);color:var(--blue-mid)}
+  .v .price{font-size:130px}
+  .price-sub{font:400 30px/1.3 var(--body);color:var(--ink-soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:8px}
+  .chip{font:600 26px/1 var(--body);color:var(--blue);background:var(--blue-tint);border:2px solid var(--blue-soft);border-radius:999px;padding:16px 26px}
+  .quote{font:400 44px/1.3 var(--head);color:var(--blue);font-style:italic}
+  .quote::before{content:"“";color:var(--yellow);font-weight:700;margin-right:.1em}
+  .quote::after{content:"”";color:var(--yellow);font-weight:700;margin-left:.1em}
+  .v .quote{display:none}
+
+  /* ---------- Scene 5 ---------- */
+  .boards{display:flex;gap:36px;justify-content:center;width:100%;max-width:1500px}
+  .v .boards{gap:18px;max-width:none}
+  .board{flex:1 1 0;background:#fff;border:2px solid var(--line);border-radius:22px;padding:30px 20px 26px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .board .y{font:700 40px/1 var(--head);color:var(--blue)}
+  .v .board .y{font-size:34px}
+  .board .ppl{display:flex;gap:12px}
+  .board .p{width:46px;height:46px;border-radius:50%;background:var(--blue-soft)}
+  .v .board .p{width:34px;height:34px}
+  .board .p.b{background:var(--blue)}
+  .board .p.m{background:var(--blue-mid)}
+  .board .p.y{background:var(--yellow)}
+  .band{width:100%;max-width:1500px;background:var(--blue);color:#fff;border-radius:999px;padding:22px 44px;display:flex;align-items:center;justify-content:center;gap:26px;font:600 36px/1 var(--body)}
+  .v .band{font-size:27px;padding:20px 30px;gap:18px;text-align:center}
+  .band svg{height:58px;width:auto;flex:none}
+  .v .band svg{height:46px}
+  .arrow{font:700 60px/1 var(--head);color:var(--blue-soft);align-self:center}
+  .v .arrow{font-size:40px}
+
+  /* ---------- Scene 6 ---------- */
+  #s6 .h2{font-size:104px}
+  .v #s6 .h2{font-size:90px}
+  #s6 .logo{width:520px;height:auto}
+  .v #s6 .logo{width:520px}
+  .cta{border:4px solid var(--yellow);border-radius:26px;padding:34px 54px;display:flex;flex-direction:column;gap:12px;align-items:center;background:rgba(255,255,255,.05)}
+  .cta .ct{font:700 58px/1.1 var(--head);color:#fff}
+  .cta .cs{font:400 30px/1.3 var(--body);color:rgba(255,255,255,.85)}
+  .v .cta .ct{font-size:50px}
+  .v .cta .cs{font-size:28px}
+  .contact{display:flex;gap:36px;align-items:center;font:600 42px/1 var(--head);color:#fff}
+  .v .contact{flex-direction:column;gap:22px;font-size:44px}
+  .contact .sep{color:var(--yellow)}
+  .v .contact .sep{display:none}
+  .contact .web{color:var(--yellow)}
+  .sender{font:400 26px/1.4 var(--body);color:rgba(255,255,255,.7)}
+
+  /* ---------- Subtitles ---------- */
+  #subs{position:absolute;left:0;right:0;bottom:64px;display:flex;justify-content:center;pointer-events:none;padding:0 120px}
+  .v #subs{bottom:330px;padding:0 60px}
+  #subs span{display:inline-block;background:rgba(14,51,86,.9);color:#fff;font:600 44px/1.3 var(--body);padding:14px 30px;border-radius:14px;max-width:1500px;text-align:center;opacity:0;transition:opacity .2s}
+  .v #subs span{font-size:42px;max-width:960px}
+  #subs span.on{opacity:1}
+  #subs.hidden{display:none}
+
+  /* ---------- HUD / controls ---------- */
+  #start{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,22,40,.72);z-index:20;cursor:pointer}
+  #start .box{background:#fff;color:var(--ink);border-radius:18px;padding:34px 40px;max-width:560px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+  #start .box h1{font:700 30px/1.2 var(--head);color:var(--blue);margin-bottom:10px}
+  #start .box p{font:400 16px/1.5 var(--body);color:var(--ink-soft);margin-bottom:14px}
+  #start .box kbd{font:600 13px/1 var(--body);background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:6px;padding:4px 7px;color:var(--blue)}
+  #start .box .btn{display:inline-block;margin-top:6px;background:var(--blue);color:#fff;font:600 17px/1 var(--body);padding:14px 26px;border-radius:999px}
+  #start.hidden{display:none}
+  #hud{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(5,22,40,.85);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;z-index:15;transition:opacity .25s;font:600 13px/1 var(--body);color:#fff}
+  #hud.hidden{opacity:0;pointer-events:none}
+  #hud button{appearance:none;border:0;background:rgba(255,255,255,.1);color:#fff;font:600 13px/1 var(--body);padding:9px 13px;border-radius:999px;cursor:pointer}
+  #hud button:hover{background:rgba(255,255,255,.2)}
+  #hud button.primary{background:var(--yellow);color:var(--blue-deep)}
+  #hud .time{font-variant-numeric:tabular-nums;padding:0 8px;opacity:.85;min-width:72px;text-align:center}
+  #hud input[type=range]{width:220px;accent-color:var(--yellow)}
+  @media (max-width:720px){#hud input[type=range]{width:120px}#hud .lbl{display:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo-full" viewBox="0 0 650.65 82.47"><g transform="translate(0.00 0.00)"><path d="M14.50 71.70 L0.16 7.96 L0.05 7.33 L0.00 6.69 L0.02 6.05 L0.09 5.41 L0.23 4.79 L0.43 4.18 L0.69 3.59 L1.01 3.04 L1.38 2.51 L1.80 2.03 L2.26 1.58 L2.76 1.19 L3.31 0.85 L3.88 0.56 L4.48 0.33 L5.09 0.16 L5.72 0.05 L6.36 0.00 L7.00 0.02 L7.64 0.09 L8.26 0.23 L8.87 0.43 L9.46 0.69 L10.02 1.01 L10.54 1.38 L11.03 1.80 L11.47 2.26 L11.86 2.76 L12.20 3.31 L12.49 3.88 L12.72 4.48 L12.89 5.09 L22.63 48.37 L29.15 32.14 L29.42 31.55 L29.75 30.99 L30.13 30.47 L30.56 29.99 L31.04 29.55 L31.56 29.16 L32.11 28.83 L32.69 28.55 L33.30 28.33 L33.93 28.17 L34.57 28.08 L35.21 28.05 L35.86 28.08 L36.50 28.17 L37.12 28.33 L37.73 28.55 L38.31 28.83 L38.87 29.16 L39.38 29.55 L39.86 29.99 L40.29 30.47 L40.67 30.99 L41.00 31.55 L41.27 32.14 L47.79 48.37 L57.53 5.09 L57.70 4.46 L57.94 3.86 L58.23 3.28 L58.59 2.73 L58.99 2.22 L59.45 1.75 L59.95 1.33 L60.48 0.96 L61.06 0.65 L61.66 0.39 L62.28 0.20 L62.92 0.07 L63.57 0.01 L64.22 0.01 L64.87 0.07 L65.51 0.20 L66.13 0.39 L66.73 0.65 L67.31 0.96 L67.84 1.33 L68.34 1.75 L68.80 2.22 L69.20 2.73 L69.56 3.28 L69.85 3.86 L70.09 4.46 L70.26 5.09 L80.00 48.37 L86.52 32.14 L86.79 31.55 L87.12 30.99 L87.50 30.47 L87.93 29.99 L88.41 29.55 L88.92 29.16 L89.48 28.83 L90.06 28.55 L90.67 28.33 L91.30 28.17 L91.93 28.08 L92.58 28.05 L93.23 28.08 L93.87 28.17 L94.49 28.33 L95.10 28.55 L95.68 28.83 L96.24 29.16 L96.75 29.55 L97.23 29.99 L97.66 30.47 L98.04 30.99 L98.37 31.55 L98.64 32.14 L105.16 48.37 L114.90 5.09 L115.07 4.48 L115.30 3.88 L115.59 3.31 L115.93 2.76 L116.32 2.26 L116.77 1.80 L117.25 1.38 L117.78 1.01 L118.33 0.69 L118.92 0.43 L119.53 0.23 L120.15 0.09 L120.79 0.02 L121.43 0.00 L122.07 0.05 L122.70 0.16 L123.32 0.33 L123.91 0.56 L124.49 0.85 L125.03 1.19 L125.53 1.58 L125.99 2.03 L126.41 2.51 L126.78 3.04 L127.10 3.59 L127.36 4.18 L127.56 4.79 L127.70 5.41 L127.78 6.05 L127.79 6.69 L127.74 7.33 L127.63 7.96 L113.29 71.70 L113.12 72.32 L112.89 72.91 L112.61 73.48 L112.27 74.02 L111.88 74.52 L111.44 74.98 L110.96 75.40 L110.44 75.77 L109.88 76.09 L109.30 76.35 L108.70 76.55 L108.08 76.69 L107.45 76.78 L106.81 76.80 L106.17 76.75 L105.55 76.65 L104.93 76.49 L104.33 76.26 L103.76 75.98 L103.22 75.65 L102.71 75.26 L102.25 74.83 L101.83 74.35 L101.45 73.83 L101.13 73.28 L100.87 72.70 L92.58 52.08 L84.30 72.70 L84.03 73.28 L83.71 73.83 L83.33 74.35 L82.91 74.83 L82.45 75.26 L81.94 75.65 L81.40 75.98 L80.83 76.26 L80.23 76.49 L79.61 76.65 L78.99 76.75 L78.35 76.80 L77.71 76.78 L77.08 76.69 L76.46 76.55 L75.86 76.35 L75.28 76.09 L74.72 75.77 L74.20 75.40 L73.72 74.98 L73.28 74.52 L72.89 74.02 L72.55 73.48 L72.27 72.91 L72.04 72.32 L71.87 71.70 L63.90 36.26 L55.92 71.70 L55.75 72.32 L55.52 72.91 L55.24 73.48 L54.90 74.02 L54.51 74.52 L54.07 74.98 L53.59 75.40 L53.07 75.77 L52.51 76.09 L51.93 76.35 L51.33 76.55 L50.71 76.69 L50.08 76.78 L49.44 76.80 L48.80 76.75 L48.18 76.65 L47.56 76.49 L46.96 76.26 L46.39 75.98 L45.85 75.65 L45.34 75.26 L44.88 74.83 L44.46 74.35 L44.08 73.83 L43.76 73.28 L43.50 72.70 L35.21 52.08 L26.93 72.70 L26.66 73.28 L26.34 73.83 L25.97 74.35 L25.54 74.83 L25.08 75.26 L24.57 75.65 L24.03 75.98 L23.46 76.26 L22.86 76.49 L22.25 76.65 L21.62 76.75 L20.98 76.80 L20.34 76.78 L19.71 76.69 L19.09 76.55 L18.49 76.35 L17.91 76.09 L17.35 75.77 L16.83 75.40 L16.35 74.98 L15.92 74.52 L15.52 74.02 L15.18 73.48 L14.90 72.91 L14.67 72.32 Z" fill="currentColor"/><circle cx="140.34" cy="68.71" r="8.09" fill="#FFD103"/></g><path d="M193.69 68.4 186.43 8.4H197.69L201.25 43.36L205.77 8.47H214.58L219.32 43.14L222.95 8.4H234.06L226.88 68.4H215.32L210.21 32.18L205.4 68.4Z M241.47 68.4V8.4H254.73V68.4Z M264.58 68.4V8.4H273.91L286.21 37.29V8.4H297.17V68.4H288.21L275.91 37.29V68.4Z M311.84 68.4 304.58 8.4H315.84L319.4 43.36L323.91 8.47H332.73L337.47 43.14L341.1 8.4H352.21L345.03 68.4H333.47L328.36 32.18L323.54 68.4Z M359.62 68.4V8.4H372.88V68.4Z M382.73 68.4V8.4H392.06L404.36 37.29V8.4H415.32V68.4H406.36L394.06 37.29V68.4Z" fill="currentColor"/><path d="M454.21 69.07Q449.03 69.07 445.58 66.84Q442.14 64.62 440.36 60.7Q438.58 56.77 438.28 51.59L445.69 49.59Q445.91 52.77 446.69 55.73Q447.47 58.7 449.25 60.59Q451.03 62.47 454.21 62.47Q457.47 62.47 459.14 60.66Q460.8 58.84 460.8 55.44Q460.8 51.36 458.95 48.88Q457.1 46.4 454.28 43.88L444.21 34.99Q441.25 32.4 439.84 29.33Q438.43 26.25 438.43 21.73Q438.43 15.14 442.21 11.51Q445.99 7.88 452.51 7.88Q456.06 7.88 458.77 8.81Q461.47 9.73 463.28 11.66Q465.1 13.59 466.17 16.51Q467.25 19.44 467.62 23.36L460.51 25.29Q460.28 22.33 459.62 19.84Q458.95 17.36 457.28 15.84Q455.62 14.33 452.51 14.33Q449.4 14.33 447.65 15.99Q445.91 17.66 445.91 20.92Q445.91 23.66 446.84 25.44Q447.77 27.21 449.84 29.07L459.99 37.96Q463.4 40.92 465.99 45.03Q468.58 49.14 468.58 54.77Q468.58 59.21 466.73 62.44Q464.88 65.66 461.65 67.36Q458.43 69.07 454.21 69.07Z M481.47 68.99Q478.95 68.99 477.54 67.66Q476.14 66.33 475.58 64.33Q475.03 62.33 475.03 60.25V25.59H482.95V57.88Q482.95 60.18 483.62 61.47Q484.28 62.77 486.36 62.77Q487.69 62.77 489.14 61.99Q490.58 61.21 491.91 60.1V25.59H499.84V68.4H491.91V64.18Q489.84 66.18 487.21 67.59Q484.58 68.99 481.47 68.99Z M508.8 82.47V25.59H516.73V28.99Q518.14 27.36 520.14 26.18Q522.14 24.99 524.88 24.99Q528.21 24.99 530.17 26.73Q532.14 28.47 533.1 31.1Q534.06 33.73 534.36 36.44Q534.65 39.14 534.65 41.07V51.44Q534.65 55.96 533.77 59.99Q532.88 64.03 530.54 66.51Q528.21 68.99 523.99 68.99Q521.69 68.99 519.91 67.84Q518.14 66.7 516.73 65.21V82.47ZM522.43 62.77Q524.51 62.77 525.4 61.25Q526.28 59.73 526.51 57.14Q526.73 54.55 526.73 51.44V41.07Q526.73 38.4 526.43 36.14Q526.14 33.88 525.17 32.55Q524.21 31.21 522.14 31.21Q520.58 31.21 519.17 31.88Q517.77 32.55 516.73 33.44V60.84Q517.84 61.66 519.25 62.21Q520.65 62.77 522.43 62.77Z M542.73 82.47V25.59H550.65V28.99Q552.06 27.36 554.06 26.18Q556.06 24.99 558.8 24.99Q562.14 24.99 564.1 26.73Q566.06 28.47 567.03 31.1Q567.99 33.73 568.28 36.44Q568.58 39.14 568.58 41.07V51.44Q568.58 55.96 567.69 59.99Q566.8 64.03 564.47 66.51Q562.14 68.99 557.91 68.99Q555.62 68.99 553.84 67.84Q552.06 66.7 550.65 65.21V82.47ZM556.36 62.77Q558.43 62.77 559.32 61.25Q560.21 59.73 560.43 57.14Q560.65 54.55 560.65 51.44V41.07Q560.65 38.4 560.36 36.14Q560.06 33.88 559.1 32.55Q558.14 31.21 556.06 31.21Q554.51 31.21 553.1 31.88Q551.69 32.55 550.65 33.44V60.84Q551.77 61.66 553.17 62.21Q554.58 62.77 556.36 62.77Z M588.43 68.99Q583.69 68.99 580.95 67.07Q578.21 65.14 577.06 61.59Q575.91 58.03 575.91 53.21V40.77Q575.91 35.96 577.06 32.4Q578.21 28.84 580.95 26.92Q583.69 24.99 588.43 24.99Q593.17 24.99 595.88 26.92Q598.58 28.84 599.73 32.4Q600.88 35.96 600.88 40.77V53.21Q600.88 58.03 599.73 61.59Q598.58 65.14 595.88 67.07Q593.17 68.99 588.43 68.99ZM588.43 63.14Q590.73 63.14 591.65 61.81Q592.58 60.47 592.77 58.29Q592.95 56.1 592.95 53.73V40.33Q592.95 37.88 592.77 35.73Q592.58 33.59 591.65 32.21Q590.73 30.84 588.43 30.84Q586.14 30.84 585.17 32.21Q584.21 33.59 584.03 35.73Q583.84 37.88 583.84 40.33V53.73Q583.84 56.1 584.03 58.29Q584.21 60.47 585.17 61.81Q586.14 63.14 588.43 63.14Z M609.25 68.4V25.59H617.17V31.66Q619.54 27.73 621.91 26.4Q624.28 25.07 626.65 25.07Q626.95 25.07 627.21 25.07Q627.47 25.07 627.91 25.14V33.88Q627.03 33.51 625.88 33.25Q624.73 32.99 623.54 32.99Q621.69 32.99 620.17 33.84Q618.65 34.7 617.17 37.14V68.4Z M645.1 68.99Q641.77 68.99 639.73 67.73Q637.69 66.47 636.77 64.18Q635.84 61.88 635.84 58.77V30.84H631.32V25.59H635.84V13.07H643.77V25.59H650.65V30.84H643.77V58.25Q643.77 60.77 644.58 61.84Q645.4 62.92 647.69 62.92Q648.28 62.92 649.06 62.84Q649.84 62.77 650.58 62.7V68.55Q649.1 68.77 647.84 68.88Q646.58 68.99 645.1 68.99Z" fill="currentColor"/></symbol>
+    <symbol id="logo-mark" viewBox="0 0 150 82.47"><g transform="translate(0.00 0.00)"><path d="M14.50 71.70 L0.16 7.96 L0.05 7.33 L0.00 6.69 L0.02 6.05 L0.09 5.41 L0.23 4.79 L0.43 4.18 L0.69 3.59 L1.01 3.04 L1.38 2.51 L1.80 2.03 L2.26 1.58 L2.76 1.19 L3.31 0.85 L3.88 0.56 L4.48 0.33 L5.09 0.16 L5.72 0.05 L6.36 0.00 L7.00 0.02 L7.64 0.09 L8.26 0.23 L8.87 0.43 L9.46 0.69 L10.02 1.01 L10.54 1.38 L11.03 1.80 L11.47 2.26 L11.86 2.76 L12.20 3.31 L12.49 3.88 L12.72 4.48 L12.89 5.09 L22.63 48.37 L29.15 32.14 L29.42 31.55 L29.75 30.99 L30.13 30.47 L30.56 29.99 L31.04 29.55 L31.56 29.16 L32.11 28.83 L32.69 28.55 L33.30 28.33 L33.93 28.17 L34.57 28.08 L35.21 28.05 L35.86 28.08 L36.50 28.17 L37.12 28.33 L37.73 28.55 L38.31 28.83 L38.87 29.16 L39.38 29.55 L39.86 29.99 L40.29 30.47 L40.67 30.99 L41.00 31.55 L41.27 32.14 L47.79 48.37 L57.53 5.09 L57.70 4.46 L57.94 3.86 L58.23 3.28 L58.59 2.73 L58.99 2.22 L59.45 1.75 L59.95 1.33 L60.48 0.96 L61.06 0.65 L61.66 0.39 L62.28 0.20 L62.92 0.07 L63.57 0.01 L64.22 0.01 L64.87 0.07 L65.51 0.20 L66.13 0.39 L66.73 0.65 L67.31 0.96 L67.84 1.33 L68.34 1.75 L68.80 2.22 L69.20 2.73 L69.56 3.28 L69.85 3.86 L70.09 4.46 L70.26 5.09 L80.00 48.37 L86.52 32.14 L86.79 31.55 L87.12 30.99 L87.50 30.47 L87.93 29.99 L88.41 29.55 L88.92 29.16 L89.48 28.83 L90.06 28.55 L90.67 28.33 L91.30 28.17 L91.93 28.08 L92.58 28.05 L93.23 28.08 L93.87 28.17 L94.49 28.33 L95.10 28.55 L95.68 28.83 L96.24 29.16 L96.75 29.55 L97.23 29.99 L97.66 30.47 L98.04 30.99 L98.37 31.55 L98.64 32.14 L105.16 48.37 L114.90 5.09 L115.07 4.48 L115.30 3.88 L115.59 3.31 L115.93 2.76 L116.32 2.26 L116.77 1.80 L117.25 1.38 L117.78 1.01 L118.33 0.69 L118.92 0.43 L119.53 0.23 L120.15 0.09 L120.79 0.02 L121.43 0.00 L122.07 0.05 L122.70 0.16 L123.32 0.33 L123.91 0.56 L124.49 0.85 L125.03 1.19 L125.53 1.58 L125.99 2.03 L126.41 2.51 L126.78 3.04 L127.10 3.59 L127.36 4.18 L127.56 4.79 L127.70 5.41 L127.78 6.05 L127.79 6.69 L127.74 7.33 L127.63 7.96 L113.29 71.70 L113.12 72.32 L112.89 72.91 L112.61 73.48 L112.27 74.02 L111.88 74.52 L111.44 74.98 L110.96 75.40 L110.44 75.77 L109.88 76.09 L109.30 76.35 L108.70 76.55 L108.08 76.69 L107.45 76.78 L106.81 76.80 L106.17 76.75 L105.55 76.65 L104.93 76.49 L104.33 76.26 L103.76 75.98 L103.22 75.65 L102.71 75.26 L102.25 74.83 L101.83 74.35 L101.45 73.83 L101.13 73.28 L100.87 72.70 L92.58 52.08 L84.30 72.70 L84.03 73.28 L83.71 73.83 L83.33 74.35 L82.91 74.83 L82.45 75.26 L81.94 75.65 L81.40 75.98 L80.83 76.26 L80.23 76.49 L79.61 76.65 L78.99 76.75 L78.35 76.80 L77.71 76.78 L77.08 76.69 L76.46 76.55 L75.86 76.35 L75.28 76.09 L74.72 75.77 L74.20 75.40 L73.72 74.98 L73.28 74.52 L72.89 74.02 L72.55 73.48 L72.27 72.91 L72.04 72.32 L71.87 71.70 L63.90 36.26 L55.92 71.70 L55.75 72.32 L55.52 72.91 L55.24 73.48 L54.90 74.02 L54.51 74.52 L54.07 74.98 L53.59 75.40 L53.07 75.77 L52.51 76.09 L51.93 76.35 L51.33 76.55 L50.71 76.69 L50.08 76.78 L49.44 76.80 L48.80 76.75 L48.18 76.65 L47.56 76.49 L46.96 76.26 L46.39 75.98 L45.85 75.65 L45.34 75.26 L44.88 74.83 L44.46 74.35 L44.08 73.83 L43.76 73.28 L43.50 72.70 L35.21 52.08 L26.93 72.70 L26.66 73.28 L26.34 73.83 L25.97 74.35 L25.54 74.83 L25.08 75.26 L24.57 75.65 L24.03 75.98 L23.46 76.26 L22.86 76.49 L22.25 76.65 L21.62 76.75 L20.98 76.80 L20.34 76.78 L19.71 76.69 L19.09 76.55 L18.49 76.35 L17.91 76.09 L17.35 75.77 L16.83 75.40 L16.35 74.98 L15.92 74.52 L15.52 74.02 L15.18 73.48 L14.90 72.91 L14.67 72.32 Z" fill="currentColor"/><circle cx="140.34" cy="68.71" r="8.09" fill="#FFD103"/></g></symbol>
+    <symbol id="ic-clock" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="none" stroke="#144772" stroke-width="3.5"/><path d="M24 12v12l8 5" fill="none" stroke="#144772" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="2.4" fill="#FFD103"/></symbol>
+    <symbol id="ic-person" viewBox="0 0 48 48"><circle cx="24" cy="17" r="8.5" fill="none" stroke="#144772" stroke-width="3.5"/><path d="M8.5 41c2.5-8 8.5-12 15.5-12s13 4 15.5 12" fill="none" stroke="#144772" stroke-width="3.5" stroke-linecap="round"/><circle cx="36" cy="12" r="4" fill="#FFD103"/></symbol>
+    <symbol id="ic-key" viewBox="0 0 48 48"><path d="M8 24l14-12 14 12v15H8z" fill="none" stroke="#144772" stroke-width="3.5" stroke-linejoin="round"/><path d="M18 39V29h8v10" fill="none" stroke="#144772" stroke-width="3.5" stroke-linejoin="round"/><circle cx="36.5" cy="30.5" r="4" fill="#FFD103"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-pin" viewBox="0 0 48 48"><path d="M24 44s-14-14.5-14-25a14 14 0 0 1 28 0c0 10.5-14 25-14 25z" fill="none" stroke="#fff" stroke-width="3"/><circle cx="24" cy="19" r="5" fill="#FFD103"/></symbol>
+    <symbol id="ic-cam" viewBox="0 0 48 48"><rect x="6" y="13" width="26" height="22" rx="4" fill="none" stroke="#fff" stroke-width="3"/><path d="M32 21l10-5v16l-10-5z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div id="stage">
+
+  <!-- ===== Scen 1: Öppning ===== -->
+  <section class="scene" id="s1" data-start="0" data-end="7">
+    <div class="wrap">
+      <svg class="meeting a" data-in="0.3" viewBox="0 0 900 400" aria-hidden="true">
+        <rect x="150" y="120" width="600" height="190" rx="95" fill="#D6E3F0"/>
+        <rect x="190" y="150" width="520" height="130" rx="65" fill="#EAF1F8"/>
+        <!-- personer: cirklar utan ansikten -->
+        <circle cx="260" cy="80" r="36" fill="#144772"/><rect x="214" y="92" width="92" height="40" rx="20" fill="#144772"/>
+        <circle cx="450" cy="70" r="36" fill="#1F5C8F"/><rect x="404" y="82" width="92" height="40" rx="20" fill="#1F5C8F"/>
+        <circle cx="640" cy="80" r="36" fill="#144772"/><rect x="594" y="92" width="92" height="40" rx="20" fill="#144772"/>
+        <circle cx="330" cy="356" r="36" fill="#1F5C8F"/><rect x="284" y="300" width="92" height="40" rx="20" fill="#1F5C8F"/>
+        <circle cx="570" cy="356" r="36" fill="#144772"/><rect x="524" y="300" width="92" height="40" rx="20" fill="#144772"/>
+        <!-- laptop -->
+        <rect x="400" y="190" width="100" height="62" rx="8" fill="#fff" stroke="#144772" stroke-width="4"/>
+        <rect x="388" y="252" width="124" height="10" rx="5" fill="#144772"/>
+        <!-- pratbubbla -->
+        <g class="bubble" data-in="3.5">
+          <path d="M690 20 h150 a22 22 0 0 1 22 22 v44 a22 22 0 0 1 -22 22 h-96 l-26 22 v-22 h-28 a22 22 0 0 1 -22 -22 v-44 a22 22 0 0 1 22 -22z" fill="#FFD103"/>
+          <text x="782" y="78" text-anchor="middle" font-family="Oswald, Arial Narrow, sans-serif" font-weight="700" font-size="52" fill="#144772">?</text>
+        </g>
+      </svg>
+      <div class="eyebrow a" data-in="1.0">Styrelsemötet</div>
+      <h1 class="h1 a" data-in="1.8">Vem i styrelsen tar hand om <span class="ul">hemsidan</span>?</h1>
+    </div>
+  </section>
+
+  <!-- ===== Scen 2: Det gör vi ===== -->
+  <section class="scene dark" id="s2" data-start="7" data-end="16">
+    <div class="wrap">
+      <h1 class="h1 a pop" data-in="0.2">Det gör vi<span class="dot"></span></h1>
+      <svg class="logo a" data-in="1.3" style="color:#fff" role="img" aria-label="WinWin Support"><use href="#logo-full"/></svg>
+      <p class="lead a" data-in="1.5">WinWin Support förvaltar föreningars WordPress-hemsidor.</p>
+      <div class="people">
+        <div class="ph a" data-in="2.6">
+          <svg aria-hidden="true"><use href="#ic-cam"/></svg>
+          <div class="tag">Plats för filmklipp</div>
+          <div class="name">Maya Raw Granholm</div>
+          <div class="role">Hemsida &amp; innehåll</div>
+        </div>
+        <div class="ph a" data-in="3.2">
+          <svg aria-hidden="true"><use href="#ic-cam"/></svg>
+          <div class="tag">Plats för filmklipp</div>
+          <div class="name">Anders Granholm</div>
+          <div class="role">Teknik &amp; support</div>
+        </div>
+      </div>
+      <div class="place a" data-in="4.5"><svg aria-hidden="true"><use href="#ic-pin"/></svg><b>Täby, Stockholm</b><span class="sep">·</span>Svenskt aktiebolag med svensk personal</div>
+    </div>
+  </section>
+
+  <!-- ===== Scen 3: Tre löften ===== -->
+  <section class="scene" id="s3" data-start="16" data-end="31">
+    <div class="wrap" style="background:#fff">
+      <div class="eyebrow a" data-in="0.2">Tre löften till styrelsen</div>
+      <div class="cards">
+        <div class="card a" data-in="0.5">
+          <div class="ic"><svg aria-hidden="true"><use href="#ic-clock"/></svg></div>
+          <div><div class="t">Svar inom 24 timmar</div><div class="s">Oftast samma arbetsdag.</div></div>
+        </div>
+        <div class="card a" data-in="4.0">
+          <div class="ic"><svg aria-hidden="true"><use href="#ic-person"/></svg></div>
+          <div><div class="t">Samma kontaktperson</div><div class="s">Maya eller Anders. Aldrig en supportkö i ett annat land.</div></div>
+        </div>
+        <div class="card a" data-in="8.5">
+          <div class="ic"><svg aria-hidden="true"><use href="#ic-key"/></svg></div>
+          <div><div class="t">Ni äger hemsidan</div><div class="s">Domän, webbhotell och innehåll är era.</div></div>
+        </div>
+      </div>
+      <div class="tagline a pop" data-in="12.5">Ni äger<span class="dot"></span> Vi stöttar<span class="dot"></span></div>
+    </div>
+  </section>
+
+  <!-- ===== Scen 4: Trygghet ===== -->
+  <section class="scene" id="s4" data-start="31" data-end="44">
+    <div class="wrap">
+      <h2 class="h2 a" data-in="0.3">Det här slipper styrelsen tänka på</h2>
+      <div class="grid">
+        <div class="panel a" data-in="0.6">
+          <div class="pt">Det här sköter vi åt er</div>
+          <div class="check a" data-in="1.0"><span class="ck"><svg aria-hidden="true"><use href="#ic-check"/></svg></span><span>Uppdateringar testade och installerade</span></div>
+          <div class="check a" data-in="2.0"><span class="ck"><svg aria-hidden="true"><use href="#ic-check"/></svg></span><span>Säkerhetskopia tas varje dag<small>hos en GDPR-godkänd molntjänst inom EU</small></span></div>
+          <div class="check a" data-in="3.0"><span class="ck"><svg aria-hidden="true"><use href="#ic-check"/></svg></span><span>Övervakningen är igång dygnet runt<small>händer något är vi oftast redan igång</small></span></div>
+        </div>
+        <div class="panel pricebox a" data-in="8.5">
+          <div class="pt">Fast pris, samma för alla föreningar</div>
+          <div class="price">350 kr<small>/mån</small></div>
+          <div class="price-sub">exkl. moms</div>
+          <div class="chips">
+            <span class="chip a" data-in="9.5">Svenskt aktiebolag</span>
+            <span class="chip a" data-in="10.2">Ingen bindningstid</span>
+            <span class="chip a" data-in="10.9">Prova i tre månader, annars pengarna tillbaka</span>
+          </div>
+        </div>
+      </div>
+      <div class="quote a" data-in="5.0">Händer något är vi oftast redan igång, innan någon i styrelsen hunnit märka det.</div>
+    </div>
+  </section>
+
+  <!-- ===== Scen 5: Kontinuitet ===== -->
+  <section class="scene" id="s5" data-start="44" data-end="51">
+    <div class="wrap" style="background:#fff">
+      <h2 class="h2 a" data-in="0.3">Vi finns kvar när styrelsen byts ut</h2>
+      <div class="boards">
+        <div class="board a" data-in="1.0"><div class="y">Styrelsen 2024</div><div class="ppl"><span class="p b"></span><span class="p m"></span><span class="p b"></span><span class="p"></span><span class="p m"></span></div></div>
+        <div class="arrow a" data-in="1.4">→</div>
+        <div class="board a" data-in="1.8"><div class="y">Styrelsen 2025</div><div class="ppl"><span class="p"></span><span class="p m"></span><span class="p"></span><span class="p b"></span><span class="p m"></span></div></div>
+        <div class="arrow a" data-in="2.2">→</div>
+        <div class="board a" data-in="2.6"><div class="y">Styrelsen 2026</div><div class="ppl"><span class="p m"></span><span class="p"></span><span class="p b"></span><span class="p"></span><span class="p"></span></div></div>
+      </div>
+      <div class="band a grow" data-in="3.2"><svg style="color:#fff" aria-hidden="true"><use href="#logo-mark"/></svg><span>WinWin Support, samma kontakt hela vägen</span></div>
+      <p class="lead a" data-in="4.5">Vi vet hur hemsidan är byggd.</p>
+    </div>
+  </section>
+
+  <!-- ===== Scen 6: Avslut ===== -->
+  <section class="scene dark" id="s6" data-start="51" data-end="9999">
+    <div class="wrap">
+      <h2 class="h2 a" data-in="0.3">Föreningar och styrelser är det bästa vi vet<span class="dot"></span></h2>
+      <svg class="logo a" data-in="1.5" style="color:#fff" role="img" aria-label="WinWin Support"><use href="#logo-full"/></svg>
+      <div class="cta a pop" data-in="3.0">
+        <div class="ct">Be om en kostnadsfri genomgång av er hemsida</div>
+        <div class="cs">Inga lösenord behövs · Inget säljsamtal · Svar inom 24 timmar</div>
+      </div>
+      <div class="contact a" data-in="4.5"><span>0707-92 32 52</span><span class="sep">·</span><span>anders@winwinsupport.se</span><span class="sep">·</span><span class="web">winwinsupport.se</span></div>
+      <div class="sender a" data-in="6.0">WinWin Support är en tjänst från Win Win Web AB, Täby. Tidigare WordPress Support Sverige.</div>
+    </div>
+  </section>
+
+  <div id="subs"><span></span></div>
+</div>
+
+<div id="start">
+  <div class="box">
+    <h1>WinWin Support – presentationsvideo</h1>
+    <p>Animerad 60-sekunders video för föreningar, med undertexter. Klicka för att starta.</p>
+    <p><kbd>Mellanslag</kbd> paus/spela &nbsp; <kbd>R</kbd> om igen &nbsp; <kbd>F</kbd> 16:9 / 9:16 &nbsp; <kbd>H</kbd> helskärm &nbsp; <kbd>U</kbd> undertexter</p>
+    <span class="btn">Starta videon</span>
+  </div>
+</div>
+
+<div id="hud" class="hidden">
+  <button id="bPlay" class="primary">Spela</button>
+  <button id="bRestart">Om igen</button>
+  <span class="time" id="tTime">0:00 / 1:00</span>
+  <input type="range" id="seek" min="0" max="60" step="0.1" value="0" aria-label="Sök i videon">
+  <button id="bFormat"><span class="lbl">Format: </span>16:9</button>
+  <button id="bSubs"><span class="lbl">Undertexter: </span>på</button>
+  <button id="bFull">Helskärm</button>
+</div>
+
+<script>
+(function(){
+  const DURATION = 60;
+  const SUB = [
+    [0.5, 3.5, "På ett styrelsemöte dyker frågan upp förr eller senare:"],
+    [3.5, 7.0, "Vem tar egentligen hand om hemsidan?"],
+    [7.3, 9.0, "Det gör vi."],
+    [9.0, 12.5, "WinWin Support förvaltar föreningars WordPress-hemsidor."],
+    [12.5, 16.0, "Vi heter Maya och Anders och finns i Täby utanför Stockholm."],
+    [16.5, 20.0, "Ni får svar inom 24 timmar, oftast samma arbetsdag."],
+    [20.0, 24.5, "Ni pratar alltid med samma person, aldrig med en supportkö i ett annat land."],
+    [24.5, 28.5, "Och föreningen äger sin hemsida, sin domän och sitt webbhotell."],
+    [28.5, 31.0, "Ni äger. Vi stöttar."],
+    [31.5, 35.5, "Vi uppdaterar, tar säkerhetskopia varje dag inom EU och håller koll dygnet runt."],
+    [35.5, 39.5, "Händer något är vi oftast redan igång, innan någon i styrelsen hunnit märka det."],
+    [39.5, 44.0, "Svenskt aktiebolag, ingen bindningstid, 350 kronor i månaden."],
+    [44.5, 50.5, "Och när styrelsen byts ut finns vi kvar, och vet hur hemsidan är byggd."],
+    [51.5, 54.5, "Föreningar och styrelser är det bästa vi vet."],
+    [54.5, 58.5, "Be om en kostnadsfri genomgång av er hemsida, utan att lämna ut några lösenord."]
+  ];
+
+  const stage = document.getElementById('stage');
+  const scenes = Array.from(document.querySelectorAll('.scene'));
+  const subEl = document.querySelector('#subs span');
+  const subsWrap = document.getElementById('subs');
+  const start = document.getElementById('start');
+  const hud = document.getElementById('hud');
+  const bPlay = document.getElementById('bPlay');
+  const bRestart = document.getElementById('bRestart');
+  const bFormat = document.getElementById('bFormat');
+  const bSubs = document.getElementById('bSubs');
+  const bFull = document.getElementById('bFull');
+  const seek = document.getElementById('seek');
+  const tTime = document.getElementById('tTime');
+
+  const params = new URLSearchParams(location.search);
+  let vertical = (params.get('format') || '').replace(/\s/g,'') === '9x16';
+  let autoplay = params.get('autoplay') === '1';
+  let showSubs = params.get('subs') !== '0';
+
+  let t = 0, playing = false, last = null, ended = false, hudTimer = null, started = false;
+
+  function applyFormat(){
+    stage.classList.toggle('v', vertical);
+    bFormat.innerHTML = '<span class="lbl">Format: </span>' + (vertical ? '9:16' : '16:9');
+    fit();
+  }
+  function fit(){
+    const W = vertical ? 1080 : 1920, H = vertical ? 1920 : 1080;
+    const s = Math.min(innerWidth / W, innerHeight / H);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  function fmt(s){ s = Math.max(0, Math.floor(s)); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+  function render(){
+    scenes.forEach(sc => {
+      const st = +sc.dataset.start, en = +sc.dataset.end;
+      const active = t >= st && t < en;
+      sc.classList.toggle('active', active);
+      sc.querySelectorAll('[data-in]').forEach(el => {
+        el.classList.toggle('on', active && t >= st + (+el.dataset.in));
+      });
+    });
+    let text = '';
+    for (const [a, b, s] of SUB) { if (t >= a && t < b) { text = s; break; } }
+    if (subEl.textContent !== text) subEl.textContent = text;
+    subEl.classList.toggle('on', !!text);
+    subsWrap.classList.toggle('hidden', !showSubs);
+    tTime.textContent = fmt(t) + ' / ' + fmt(DURATION);
+    if (!seek.matches(':active')) seek.value = Math.min(t, DURATION);
+  }
+
+  function loop(now){
+    if (last === null) last = now;
+    if (playing) {
+      t += (now - last) / 1000;
+      if (t >= DURATION) { t = DURATION; playing = false; ended = true; bPlay.textContent = 'Spela'; showHud(true); }
+    }
+    last = now;
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  function play(){
+    if (ended) { t = 0; ended = false; }
+    playing = true; started = true; bPlay.textContent = 'Paus';
+    start.classList.add('hidden');
+    scheduleHideHud();
+  }
+  function pause(){ playing = false; bPlay.textContent = 'Spela'; showHud(true); }
+  function toggle(){ playing ? pause() : play(); }
+  function restart(){ t = 0; ended = false; play(); }
+
+  function showHud(keep){
+    hud.classList.remove('hidden');
+    clearTimeout(hudTimer);
+    if (!keep) scheduleHideHud();
+  }
+  function scheduleHideHud(){
+    clearTimeout(hudTimer);
+    hudTimer = setTimeout(() => { if (playing) hud.classList.add('hidden'); }, 1800);
+  }
+
+  // Events
+  start.addEventListener('click', play);
+  bPlay.addEventListener('click', toggle);
+  bRestart.addEventListener('click', restart);
+  bFormat.addEventListener('click', () => { vertical = !vertical; applyFormat(); });
+  bSubs.addEventListener('click', () => { showSubs = !showSubs; bSubs.innerHTML = '<span class="lbl">Undertexter: </span>' + (showSubs ? 'på' : 'av'); });
+  bFull.addEventListener('click', () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); });
+  seek.addEventListener('input', () => { t = +seek.value; ended = false; render(); });
+  document.addEventListener('mousemove', () => { if (started) showHud(false); });
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    if (k === ' ') { e.preventDefault(); toggle(); }
+    else if (k === 'r') restart();
+    else if (k === 'f') { vertical = !vertical; applyFormat(); }
+    else if (k === 'h') bFull.click();
+    else if (k === 'u') bSubs.click();
+    else if (k === 'arrowright') { t = Math.min(DURATION, t + 2); render(); }
+    else if (k === 'arrowleft') { t = Math.max(0, t - 2); render(); }
+  });
+  addEventListener('resize', fit);
+
+  applyFormat();
+  render();
+  requestAnimationFrame(loop);
+  if (autoplay) { start.classList.add('hidden'); hud.classList.add('hidden'); setTimeout(play, 400); }
+})();
+</script>
+</body>
+</html>
