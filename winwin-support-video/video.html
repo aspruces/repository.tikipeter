@@ -73,6 +73,7 @@
   .ph svg{width:74px;height:74px;opacity:.7;margin-bottom:6px}
   .place{display:flex;align-items:center;gap:16px;font:400 36px/1 var(--body);color:rgba(255,255,255,.9)}
   .place svg{width:44px;height:44px}
+  .flag{display:inline-block;width:1.45em;height:.9em;vertical-align:-.12em;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.08);margin-right:.35em}
   .place b{font-weight:600;color:#fff}
   .place .sep{opacity:.5;margin:0 6px}
   .v .place{flex-direction:column;gap:10px;font-size:32px}
@@ -165,6 +166,7 @@
   #start .box h1{font:700 30px/1.2 var(--head);color:var(--blue);margin-bottom:10px}
   #start .box p{font:400 16px/1.5 var(--body);color:var(--ink-soft);margin-bottom:14px}
   #start .box kbd{font:600 13px/1 var(--body);background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:6px;padding:4px 7px;color:var(--blue)}
+  #start .box .small{font-size:13px;color:#7A8290}
   #start .box .btn{display:inline-block;margin-top:6px;background:var(--blue);color:#fff;font:600 17px/1 var(--body);padding:14px 26px;border-radius:999px}
   #start.hidden{display:none}
   #hud{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(5,22,40,.85);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;z-index:15;transition:opacity .25s;font:600 13px/1 var(--body);color:#fff}
@@ -174,6 +176,7 @@
   #hud button.primary{background:var(--yellow);color:var(--blue-deep)}
   #hud .time{font-variant-numeric:tabular-nums;padding:0 8px;opacity:.85;min-width:72px;text-align:center}
   #hud input[type=range]{width:220px;accent-color:var(--yellow)}
+  #hud select{appearance:none;border:0;background:rgba(255,255,255,.1);color:#fff;font:600 13px/1 var(--body);padding:9px 10px;border-radius:999px;max-width:150px}
   @media (max-width:720px){#hud input[type=range]{width:120px}#hud .lbl{display:none}}
 </style>
 </head>
@@ -188,6 +191,7 @@
     <symbol id="ic-key" viewBox="0 0 48 48"><path d="M8 24l14-12 14 12v15H8z" fill="none" stroke="#144772" stroke-width="3.5" stroke-linejoin="round"/><path d="M18 39V29h8v10" fill="none" stroke="#144772" stroke-width="3.5" stroke-linejoin="round"/><circle cx="36.5" cy="30.5" r="4" fill="#FFD103"/></symbol>
     <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-pin" viewBox="0 0 48 48"><path d="M24 44s-14-14.5-14-25a14 14 0 0 1 28 0c0 10.5-14 25-14 25z" fill="none" stroke="#fff" stroke-width="3"/><circle cx="24" cy="19" r="5" fill="#FFD103"/></symbol>
+    <symbol id="flag-se" viewBox="0 0 16 10"><rect width="16" height="10" rx="1" fill="#006AA7"/><rect x="5" y="0" width="2" height="10" fill="#FECC02"/><rect x="0" y="4" width="16" height="2" fill="#FECC02"/></symbol>
     <symbol id="ic-cam" viewBox="0 0 48 48"><rect x="6" y="13" width="26" height="22" rx="4" fill="none" stroke="#fff" stroke-width="3"/><path d="M32 21l10-5v16l-10-5z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
@@ -240,7 +244,7 @@
           <div class="role">Teknik &amp; support</div>
         </div>
       </div>
-      <div class="place a" data-in="4.5"><svg aria-hidden="true"><use href="#ic-pin"/></svg><b>Täby, Stockholm</b><span class="sep">·</span>Svenskt aktiebolag med svensk personal</div>
+      <div class="place a" data-in="4.5"><svg aria-hidden="true"><use href="#ic-pin"/></svg><b>Täby, Stockholm</b><span class="sep">·</span><span><svg class="flag" aria-label="Sveriges flagga" role="img"><use href="#flag-se"/></svg>Svenskt aktiebolag med svensk personal</span></div>
     </div>
   </section>
 
@@ -282,7 +286,7 @@
           <div class="price">350 kr<small>/mån</small></div>
           <div class="price-sub">exkl. moms</div>
           <div class="chips">
-            <span class="chip a" data-in="9.5">Svenskt aktiebolag</span>
+            <span class="chip a" data-in="9.5"><svg class="flag" aria-label="Sveriges flagga" role="img"><use href="#flag-se"/></svg>Svenskt aktiebolag</span>
             <span class="chip a" data-in="10.2">Ingen bindningstid</span>
             <span class="chip a" data-in="10.9">Prova i tre månader, annars pengarna tillbaka</span>
           </div>
@@ -318,7 +322,7 @@
         <div class="cs">Inga lösenord behövs · Inget säljsamtal · Svar inom 24 timmar</div>
       </div>
       <div class="contact a" data-in="4.5"><span>0707-92 32 52</span><span class="sep">·</span><span>anders@winwinsupport.se</span><span class="sep">·</span><span class="web">winwinsupport.se</span></div>
-      <div class="sender a" data-in="6.0">WinWin Support är en tjänst från Win Win Web AB, Täby. Tidigare WordPress Support Sverige.</div>
+      <div class="sender a" data-in="6.0">WinWin Support är en tjänst från Win Win Web AB, Täby.</div>
     </div>
   </section>
 
@@ -329,7 +333,8 @@
   <div class="box">
     <h1>WinWin Support – presentationsvideo</h1>
     <p>Animerad 60-sekunders video för föreningar, med undertexter. Klicka för att starta.</p>
-    <p><kbd>Mellanslag</kbd> paus/spela &nbsp; <kbd>R</kbd> om igen &nbsp; <kbd>F</kbd> 16:9 / 9:16 &nbsp; <kbd>H</kbd> helskärm &nbsp; <kbd>U</kbd> undertexter</p>
+    <p><kbd>Mellanslag</kbd> paus/spela &nbsp; <kbd>R</kbd> om igen &nbsp; <kbd>F</kbd> 16:9 / 9:16 &nbsp; <kbd>H</kbd> helskärm &nbsp; <kbd>U</kbd> undertexter &nbsp; <kbd>V</kbd> AI-röst &nbsp; <kbd>M</kbd> musik</p>
+    <p class="small">AI-rösten är en platshållare tills Maya och Anders läst in manuset. Den använder webbläsarens svenska röst (på Mac: Alva). Musiken är en genererad skiss, inte slutlig.</p>
     <span class="btn">Starta videon</span>
   </div>
 </div>
@@ -341,6 +346,9 @@
   <input type="range" id="seek" min="0" max="60" step="0.1" value="0" aria-label="Sök i videon">
   <button id="bFormat"><span class="lbl">Format: </span>16:9</button>
   <button id="bSubs"><span class="lbl">Undertexter: </span>på</button>
+  <button id="bVoice"><span class="lbl">AI-röst: </span>av</button>
+  <select id="voiceSel" aria-label="Välj röst"></select>
+  <button id="bMusic"><span class="lbl">Musik: </span>av</button>
   <button id="bFull">Helskärm</button>
 </div>
 
@@ -378,9 +386,14 @@
   const bFull = document.getElementById('bFull');
   const seek = document.getElementById('seek');
   const tTime = document.getElementById('tTime');
+  const bVoice = document.getElementById('bVoice');
+  const voiceSel = document.getElementById('voiceSel');
+  const bMusic = document.getElementById('bMusic');
 
   const params = new URLSearchParams(location.search);
   let vertical = (params.get('format') || '').replace(/\s/g,'') === '9x16';
+  let voiceOn = params.get('voice') === '1';
+  let musicOn = params.get('music') === '1';
   let autoplay = params.get('autoplay') === '1';
   let showSubs = params.get('subs') !== '0';
 
@@ -407,8 +420,9 @@
         el.classList.toggle('on', active && t >= st + (+el.dataset.in));
       });
     });
-    let text = '';
-    for (const [a, b, s] of SUB) { if (t >= a && t < b) { text = s; break; } }
+    let text = '', ci = -1;
+    for (let i = 0; i < SUB.length; i++) { const [a, b, s] = SUB[i]; if (t >= a && t < b) { text = s; ci = i; break; } }
+    if (playing && ci !== lastSpoken) { lastSpoken = ci; if (ci >= 0) speakLine(ci); }
     if (subEl.textContent !== text) subEl.textContent = text;
     subEl.classList.toggle('on', !!text);
     subsWrap.classList.toggle('hidden', !showSubs);
@@ -420,7 +434,7 @@
     if (last === null) last = now;
     if (playing) {
       t += (now - last) / 1000;
-      if (t >= DURATION) { t = DURATION; playing = false; ended = true; bPlay.textContent = 'Spela'; showHud(true); }
+      if (t >= DURATION) { t = DURATION; playing = false; ended = true; bPlay.textContent = 'Spela'; showHud(true); stopMusic(); }
     }
     last = now;
     render();
@@ -431,11 +445,13 @@
     if (ended) { t = 0; ended = false; }
     playing = true; started = true; bPlay.textContent = 'Paus';
     start.classList.add('hidden');
+    lastSpoken = -1;
+    if (musicOn) startMusic(t);
     scheduleHideHud();
   }
-  function pause(){ playing = false; bPlay.textContent = 'Spela'; showHud(true); }
+  function pause(){ playing = false; bPlay.textContent = 'Spela'; showHud(true); stopSpeech(); stopMusic(); }
   function toggle(){ playing ? pause() : play(); }
-  function restart(){ t = 0; ended = false; play(); }
+  function restart(){ stopSpeech(); stopMusic(); t = 0; ended = false; play(); }
 
   function showHud(keep){
     hud.classList.remove('hidden');
@@ -447,6 +463,102 @@
     hudTimer = setTimeout(() => { if (playing) hud.classList.add('hidden'); }, 1800);
   }
 
+  // ---------- AI-röst (platshållare): webbläsarens talsyntes ----------
+  let lastSpoken = -1, voices = [];
+  const synth = window.speechSynthesis || null;
+  function loadVoices(){
+    if (!synth) return;
+    voices = synth.getVoices().filter(v => /^sv/i.test(v.lang));
+    voiceSel.innerHTML = '';
+    if (!voices.length) { const o = document.createElement('option'); o.textContent = 'Ingen svensk röst i webbläsaren'; voiceSel.appendChild(o); return; }
+    voices.forEach((v, i) => { const o = document.createElement('option'); o.value = i; o.textContent = v.name; voiceSel.appendChild(o); });
+    const pref = voices.findIndex(v => /alva|hedda|sofie|bengt|oskar/i.test(v.name));
+    if (pref >= 0) voiceSel.value = pref;
+  }
+  if (synth) { loadVoices(); synth.onvoiceschanged = loadVoices; }
+  function speakLine(i){
+    if (!voiceOn || !synth || !voices.length) return;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(SUB[i][2]);
+    u.voice = voices[+voiceSel.value] || voices[0];
+    u.lang = 'sv-SE'; u.rate = 0.95; u.pitch = 1; u.volume = 1;
+    synth.speak(u);
+  }
+  function stopSpeech(){ if (synth) synth.cancel(); }
+  function setVoiceBtn(){ bVoice.innerHTML = '<span class="lbl">AI-röst: </span>' + (voiceOn ? 'på' : 'av'); }
+  bVoice.addEventListener('click', () => { voiceOn = !voiceOn; setVoiceBtn(); if (!voiceOn) stopSpeech(); else lastSpoken = -1; });
+  voiceSel.addEventListener('change', () => { lastSpoken = -1; });
+  setVoiceBtn();
+
+  // ---------- Musik (platshållare): genererad i Web Audio ----------
+  // Lugn skiss i D-dur, 76 bpm: mjuk padd, plockad arpeggio, lätt bas, klocka vid "Det gör vi" och "Ni äger. Vi stöttar."
+  let ac = null, master = null, musicTimer = null;
+  const BPM = 76, BEAT = 60 / BPM, BAR = BEAT * 4;
+  const CHORDS = [ // [padd-toner Hz], bas Hz
+    { pad: [146.83, 185.00, 220.00, 293.66], bass: 73.42 },  // D
+    { pad: [110.00, 164.81, 220.00, 277.18], bass: 55.00 },  // A
+    { pad: [123.47, 185.00, 246.94, 293.66], bass: 61.74 },  // Bm
+    { pad: [98.00, 146.83, 196.00, 246.94], bass: 49.00 }    // G
+  ];
+  const BELLS = [[7.3, 587.33], [28.5, 880.00], [51.5, 587.33]];
+  function tone(freq, type, at, dur, peak, attack, release, filterHz){
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.value = freq;
+    let dest = master;
+    if (filterHz) { const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = filterHz; f.connect(master); dest = f; }
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(peak, at + attack);
+    g.gain.setValueAtTime(peak, Math.max(at + attack, at + dur - release));
+    g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+    o.connect(g); g.connect(dest);
+    o.start(at); o.stop(at + dur + 0.05);
+  }
+  function startMusic(fromT){
+    stopMusic(true);
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ac = new AC();
+    master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+    const now = ac.currentTime + 0.08;
+    master.gain.linearRampToValueAtTime(0.5, now + 1.2);
+    const abs = (evT) => now + (evT - fromT);
+    const bars = Math.ceil(DURATION / BAR) + 1;
+    for (let b = 0; b < bars; b++) {
+      const t0 = b * BAR, ch = CHORDS[b % 4];
+      if (t0 + BAR < fromT) continue;
+      const quiet = (t0 >= 31 && t0 < 44) ? 0.7 : 1;
+      // padd: två detunade oscillatorer per ton
+      if (t0 + BAR >= fromT) ch.pad.forEach(f => {
+        const at = Math.max(abs(t0), now);
+        tone(f * 1.002, 'triangle', at, BAR + 0.6, 0.045 * quiet, 0.7, 0.9, 900);
+        tone(f * 0.998, 'sine', at, BAR + 0.6, 0.05 * quiet, 0.7, 0.9, 900);
+      });
+      // bas
+      if (t0 >= fromT) tone(ch.bass, 'sine', abs(t0), BAR * 0.9, 0.09 * quiet, 0.05, 0.6);
+      // arpeggio på åttondelar, en oktav upp
+      for (let e = 0; e < 8; e++) {
+        const te = t0 + e * BEAT / 2;
+        if (te < fromT) continue;
+        const f = ch.pad[[0, 2, 1, 3, 2, 0, 3, 1][e]] * 2;
+        tone(f, 'sine', abs(te), 0.55, 0.07 * quiet, 0.01, 0.45);
+      }
+    }
+    BELLS.forEach(([bt, f]) => { if (bt >= fromT) { tone(f, 'sine', abs(bt), 1.8, 0.11, 0.01, 1.6); tone(f * 2, 'sine', abs(bt), 1.2, 0.03, 0.01, 1.0); } });
+    // tona ut mot slutet
+    const fadeAt = abs(57.5);
+    if (fadeAt > now) { master.gain.setValueAtTime(0.5, fadeAt); master.gain.linearRampToValueAtTime(0, abs(61)); }
+  }
+  function stopMusic(immediate){
+    if (!ac) return;
+    const a = ac, m = master;
+    try { m.gain.setTargetAtTime(0, a.currentTime, immediate ? 0.02 : 0.12); } catch (e) {}
+    setTimeout(() => { try { a.close(); } catch (e) {} }, 400);
+    ac = null; master = null;
+  }
+  function setMusicBtn(){ bMusic.innerHTML = '<span class="lbl">Musik: </span>' + (musicOn ? 'på' : 'av'); }
+  bMusic.addEventListener('click', () => { musicOn = !musicOn; setMusicBtn(); if (musicOn && playing) startMusic(t); else stopMusic(); });
+  setMusicBtn();
+
   // Events
   start.addEventListener('click', play);
   bPlay.addEventListener('click', toggle);
@@ -454,7 +566,7 @@
   bFormat.addEventListener('click', () => { vertical = !vertical; applyFormat(); });
   bSubs.addEventListener('click', () => { showSubs = !showSubs; bSubs.innerHTML = '<span class="lbl">Undertexter: </span>' + (showSubs ? 'på' : 'av'); });
   bFull.addEventListener('click', () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); });
-  seek.addEventListener('input', () => { t = +seek.value; ended = false; render(); });
+  seek.addEventListener('input', () => { t = +seek.value; ended = false; stopSpeech(); lastSpoken = -1; if (playing && musicOn) startMusic(t); render(); });
   document.addEventListener('mousemove', () => { if (started) showHud(false); });
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT') return;
@@ -464,8 +576,10 @@
     else if (k === 'f') { vertical = !vertical; applyFormat(); }
     else if (k === 'h') bFull.click();
     else if (k === 'u') bSubs.click();
-    else if (k === 'arrowright') { t = Math.min(DURATION, t + 2); render(); }
-    else if (k === 'arrowleft') { t = Math.max(0, t - 2); render(); }
+    else if (k === 'v') bVoice.click();
+    else if (k === 'm') bMusic.click();
+    else if (k === 'arrowright') { t = Math.min(DURATION, t + 2); stopSpeech(); lastSpoken = -1; if (playing && musicOn) startMusic(t); render(); }
+    else if (k === 'arrowleft') { t = Math.max(0, t - 2); stopSpeech(); lastSpoken = -1; if (playing && musicOn) startMusic(t); render(); }
   });
   addEventListener('resize', fit);
 

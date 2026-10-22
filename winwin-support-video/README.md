@@ -14,8 +14,9 @@ Varumärke: WinWin Support (winwinsupport.se), en tjänst från Win Win Web AB, 
 ## Spela upp videon
 
 1. Öppna `video.html` i Chrome eller Edge (dubbelklicka på filen).
-2. Klicka på startrutan. Tangenter: **mellanslag** paus, **R** om igen, **F** växla 16:9/9:16, **H** helskärm, **U** undertexter, **pil höger/vänster** hoppa 2 s.
-3. Inspelning utan startruta och kontroller: `video.html?format=16x9&autoplay=1` respektive `video.html?format=9x16&autoplay=1`. Tryck H för helskärm först, ladda sedan om med adressen ovan.
+2. Klicka på startrutan. Tangenter: **mellanslag** paus, **R** om igen, **F** växla 16:9/9:16, **H** helskärm, **U** undertexter, **pil höger/vänster** hoppa 2 s, **V** AI-röst, **M** musik.
+3. Inspelning utan startruta och kontroller: `video.html?format=16x9&autoplay=1` respektive `video.html?format=9x16&autoplay=1`. Lägg till `&voice=1` för AI-rösten (platshållare, webbläsarens svenska röst) och `&music=1` för den genererade musikskissen. Tryck H för helskärm först, ladda sedan om med adressen ovan.
+4. `musik/placeholder-melodi.mp3` är samma musikskiss som fil, för att lägga under en klippt version i FilmCraft tills riktig musik valts.
 
 Typsnitten Oswald och Open Sans hämtas från Google Fonts. Utan nätverk används systemtypsnitt i stället.
 

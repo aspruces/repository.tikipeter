@@ -10,6 +10,8 @@
 - **Undvik:** ukulele-glad reklammusik, visslingar, elektronisk hype, epic trailer-känsla.
 - **Sluta:** låt musiken klinga ut över slutbilden, ingen tvär stopp.
 
+**Placeholder:** `musik/placeholder-melodi.mp3` (60 s) är en enkel genererad skiss enligt beskrivningen ovan: D-dur, 76 bpm, padd + plockad arpeggio + lätt bas, liten klocka vid "Det gör vi." (0:07) och "Ni äger. Vi stöttar." (0:28), dämpad under scen 4, uttoning från 0:57. Samma skiss spelas i `video.html` med tangenten M. Den duger för att bedöma tempo och känsla, men byt till ett licensierat spår från Filmstro eller Persona Music i den färdiga filmen.
+
 ## Klipp och foton att ta fram själv
 
 Numrerat efter scen. Allt filmas liggande (16:9) och helst även stående (9:16), eller liggande i 4K så att en stående beskärning går att göra.
